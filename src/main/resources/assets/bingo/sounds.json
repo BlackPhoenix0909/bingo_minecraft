@@ -1,0 +1,18 @@
+{
+  "bingo.win": {
+    "sounds": [
+      {
+        "name": "bingo:win",
+        "stream": false
+      }
+    ]
+  },
+  "bingo.collect": {
+    "sounds": [
+      {
+        "name": "bingo:collect",
+        "stream": false
+      }
+    ]
+  }
+}

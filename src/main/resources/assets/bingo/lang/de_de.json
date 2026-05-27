@@ -1,0 +1,11 @@
+{
+  "bingo.title": "Bingo!",
+  "bingo.subtitle": "Sammle Items · 3 in einer Reihe = Sieg!",
+  "bingo.collected": "Gesammelt",
+  "bingo.win": "BINGO!",
+  "bingo.win.you": "Du hast gewonnen!",
+  "bingo.win.other": "%s hat gewonnen!",
+  "bingo.no_game": "Kein Bingo-Spiel aktiv!",
+  "bingo.game_started": "Bingo-Spiel gestartet!",
+  "bingo.game_stopped": "Bingo-Spiel beendet!"
+}

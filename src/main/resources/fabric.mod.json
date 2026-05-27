@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "bingo",
+  "version": "${version}",
+  "name": "Minecraft Bingo",
+  "description": "A Bingo minigame mod - collect items and get 3 in a row to win!",
+  "authors": ["BingoMod"],
+  "license": "MIT",
+  "icon": "assets/bingo/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["de.bingo.BingoMod"],
+    "client": ["de.bingo.BingoModClient"]
+  },
+  "mixins": [],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "fabric-api": "*",
+    "minecraft": "~1.21.1",
+    "java": ">=21"
+  }
+}
