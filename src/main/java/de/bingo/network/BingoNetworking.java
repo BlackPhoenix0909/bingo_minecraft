@@ -15,37 +15,35 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class BingoNetworking {
 
-    public record BoardPayload(boolean active, List<String> itemIds, List<Boolean> progress)
-            implements CustomPayload {
+    public record BoardPayload(boolean active, List<String> itemIds, List<Boolean> progress) implements CustomPayload {
         public static final Id<BoardPayload> ID = new Id<>(Identifier.of("bingo", "board"));
         public static final PacketCodec<RegistryByteBuf, BoardPayload> CODEC = PacketCodec.tuple(
-                PacketCodecs.BOOL, BoardPayload::active,
-                PacketCodecs.STRING.collect(PacketCodecs.toList()), BoardPayload::itemIds,
-                PacketCodecs.BOOL.collect(PacketCodecs.toList()), BoardPayload::progress,
-                BoardPayload::new);
+            PacketCodecs.BOOL, BoardPayload::active,
+            PacketCodecs.STRING.collect(PacketCodecs.toList()), BoardPayload::itemIds,
+            PacketCodecs.BOOL.collect(PacketCodecs.toList()), BoardPayload::progress,
+            BoardPayload::new);
         @Override public Id<? extends CustomPayload> getId() { return ID; }
     }
 
     public record ProgressPayload(List<Boolean> progress) implements CustomPayload {
         public static final Id<ProgressPayload> ID = new Id<>(Identifier.of("bingo", "progress"));
         public static final PacketCodec<RegistryByteBuf, ProgressPayload> CODEC = PacketCodec.tuple(
-                PacketCodecs.BOOL.collect(PacketCodecs.toList()), ProgressPayload::progress,
-                ProgressPayload::new);
+            PacketCodecs.BOOL.collect(PacketCodecs.toList()), ProgressPayload::progress,
+            ProgressPayload::new);
         @Override public Id<? extends CustomPayload> getId() { return ID; }
     }
 
     public record WinPayload(String winner) implements CustomPayload {
         public static final Id<WinPayload> ID = new Id<>(Identifier.of("bingo", "win"));
         public static final PacketCodec<RegistryByteBuf, WinPayload> CODEC = PacketCodec.tuple(
-                PacketCodecs.STRING, WinPayload::winner,
-                WinPayload::new);
+            PacketCodecs.STRING, WinPayload::winner,
+            WinPayload::new);
         @Override public Id<? extends CustomPayload> getId() { return ID; }
     }
 
@@ -56,10 +54,10 @@ public class BingoNetworking {
     }
 
     public static void registerPayloads() {
-        PayloadTypeRegistry.playS2C().register(BoardPayload.ID,    BoardPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(BoardPayload.ID, BoardPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(ProgressPayload.ID, ProgressPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(WinPayload.ID,      WinPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(StopPayload.ID,     StopPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(WinPayload.ID, WinPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(StopPayload.ID, StopPayload.CODEC);
     }
 
     public static void registerServerPackets() {
@@ -97,8 +95,7 @@ public class BingoNetworking {
             ServerPlayNetworking.send(player, new BoardPayload(
                 true,
                 List.of(BingoMod.currentGame.getBoardItemIds()),
-                boolArrayToList(BingoMod.currentGame.getProgress(player.getUuid()))
-            ));
+                boolArrayToList(BingoMod.currentGame.getProgress(player.getUuid()))));
         } else {
             ServerPlayNetworking.send(player, new BoardPayload(false, List.of(), List.of()));
         }
