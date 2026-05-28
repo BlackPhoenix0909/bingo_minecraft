@@ -66,4 +66,73 @@ public class BingoNetworking {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             if (BingoMod.currentGame == null) return;
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
-                UUID uuid = player.g
+                UUID uuid = player.getUuid();
+                boolean[] progress = BingoMod.currentGame.getProgress(uuid);
+                PlayerInventory inv = player.getInventory();
+                Item[] board = BingoMod.currentGame.getBoard();
+                boolean changed = false;
+                for (int slot = 0; slot < inv.size(); slot++) {
+                    Item item = inv.getStack(slot).getItem();
+                    for (int i = 0; i < BingoGame.TOTAL; i++) {
+                        if (board[i] == item && !progress[i]) {
+                            progress[i] = true;
+                            changed = true;
+                        }
+                    }
+                }
+                if (changed) {
+                    if (BingoMod.currentGame.checkBingo(progress) && !BingoMod.currentGame.hasWon(uuid)) {
+                        BingoMod.currentGame.addWinner(uuid);
+                        sendBingoWin(player, server);
+                    }
+                    sendProgressSync(player, progress);
+                }
+            }
+        });
+    }
+
+    public static void sendOpenGuiPacket(ServerPlayerEntity player) {
+        if (player == null) return;
+        if (BingoMod.currentGame != null) {
+            ServerPlayNetworking.send(player, new BoardPayload(
+                true,
+                List.of(BingoMod.currentGame.getBoardItemIds()),
+                boolArrayToList(BingoMod.currentGame.getProgress(player.getUuid()))
+            ));
+        } else {
+            ServerPlayNetworking.send(player, new BoardPayload(false, List.of(), List.of()));
+        }
+    }
+
+    public static void broadcastGameState(MinecraftServer server) {
+        if (BingoMod.currentGame == null) return;
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            sendOpenGuiPacket(player);
+        }
+    }
+
+    public static void sendProgressSync(ServerPlayerEntity player, boolean[] progress) {
+        ServerPlayNetworking.send(player, new ProgressPayload(boolArrayToList(progress)));
+    }
+
+    public static void sendBingoWin(ServerPlayerEntity winner, MinecraftServer server) {
+        String name = winner.getName().getString();
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            ServerPlayNetworking.send(player, new WinPayload(name));
+        }
+        server.getPlayerManager().broadcast(
+            Text.literal("§6§l🎉 BINGO! §e" + name + " §6hat gewonnen! 🎉"), false);
+    }
+
+    public static void broadcastGameStop(MinecraftServer server) {
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+            ServerPlayNetworking.send(player, new StopPayload());
+        }
+    }
+
+    private static List<Boolean> boolArrayToList(boolean[] arr) {
+        List<Boolean> list = new ArrayList<>(arr.length);
+        for (boolean b : arr) list.add(b);
+        return list;
+    }
+}
