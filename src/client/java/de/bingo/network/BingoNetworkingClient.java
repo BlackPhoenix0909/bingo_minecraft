@@ -8,7 +8,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
 import java.util.List;
 
 public class BingoNetworkingClient {
